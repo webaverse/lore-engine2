@@ -3,13 +3,7 @@ import uuidByString from 'uuid-by-string';
 
 import styles from '../../styles/Character.module.css'
 import {Ctx} from '../../context.js';
-
-const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
-const capitalizeAllWords = s => {
-  let words = s.split(/\s+/);
-  words = words.map(word => capitalize(word));
-  return words.join(' ');
-};
+import {capitalize, capitalizeAllWords} from '../../utils.js';
 
 const Character = ({
   // url,
@@ -28,13 +22,12 @@ Character.getInitialProps = async ctx => {
   const {req} = ctx;
   const match = req.url.match(/^\/characters\/([^\/]*)/);
   let character = match ? match[1] : '';
+  character = decodeURIComponent(character);
   character = character.replace(/_/g, ' ');
   character = capitalizeAllWords(character);
   
   const prompt = `\
 Generate 50 RPG characters.
-
----
 
 # Scillia Doge
 ## Drop Hunter

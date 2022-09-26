@@ -8,7 +8,7 @@ const Characters = ({
 }) => {
   return (
     <div>
-      characters {url} {id}
+      characters {id}
     </div>
   );
 };
