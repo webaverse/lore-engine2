@@ -178,10 +178,10 @@ export function makeGenerateFn() {
       model: 'text-davinci-002',
       prompt,
       stop,
-      top_p: 1,
+      // top_p: 1,
       // frequency_penalty: needsRepetition ? 0.1 : 0.4,
       // presence_penalty: needsRepetition ? 0.1 : 0.4,
-      temperature: 0.85,
+      // temperature: 0.85,
       max_tokens: 256,
       best_of: 1,
     });
