@@ -14,7 +14,12 @@ const Characters = ({
 };
 Characters.getInitialProps = async ctx => {
   const {req} = ctx;
+  
   const c = new Ctx();
+  await c.aiClient.generate(`\
+
+`);
+
   return {
     url: req.url,
     id: uuidByString(req.url),
