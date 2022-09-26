@@ -4,17 +4,15 @@ import uuidByString from 'uuid-by-string';
 import styles from '../../styles/Character.module.css'
 import {Ctx} from '../../context.js';
 
-const capitalizeWord = s => {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-};
+const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 const capitalizeAllWords = s => {
   let words = s.split(/\s+/);
-  words = words.map(word => capitalizeWord(word));
+  words = words.map(word => capitalize(word));
   return words.join(' ');
 };
 
 const Character = ({
-  url,
+  // url,
   id,
   character,
   bio,
@@ -31,6 +29,7 @@ Character.getInitialProps = async ctx => {
   const match = req.url.match(/^\/characters\/([^\/]*)/);
   let character = match ? match[1] : '';
   character = character.replace(/_/g, ' ');
+  character = capitalizeAllWords(character);
   
   const prompt = `\
 Generate 50 RPG characters.
@@ -61,14 +60,30 @@ She is an engineer. 17/F engineer. She is new on the street. She has a strong mo
 ##`;
 
   const c = new Ctx();
-  let bio = await c.aiClient.generate(prompt, '# ');
-  bio = bio.trim();
-  const bioLines = bio.split(/\n+/);
-  bioLines[0] = capitalizeAllWords(bioLines[0]);
-  bio = bioLines.join('\n');
+  let bio = '';
+  const numTries = 5;
+  for (let i = 0; i < numTries; i++) {
+    bio = await c.aiClient.generate(prompt, '# ');
+    bio = bio.trim();
+    const bioLines = bio.split(/\n+/);
+    if (bioLines.length >= 2) {
+      bioLines[0] = bioLines[0]
+        .replace(/^"(.+)"$/, '$1')
+        .replace(/^'(.+)'$/, '$1');
+      bioLines[0] = capitalizeAllWords(bioLines[0]);
+      bioLines[1] = capitalize(bioLines[1]);
+      bio = bioLines.join('\n');
+      break;
+    } else {
+      bio = '';
+    }
+  }
+  if (!bio) {
+    throw new Error('too many retries');
+  }
 
   return {
-    url: req.url,
+    // url: req.url,
     id: uuidByString(character),
     character,
     bio,

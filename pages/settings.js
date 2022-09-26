@@ -3,7 +3,7 @@ import uuidByString from 'uuid-by-string';
 import {Ctx} from '../context.js';
 
 const Settings = ({
-  url,
+  // url,
   id,
 }) => {
   return (
@@ -16,7 +16,7 @@ Settings.getInitialProps = async ctx => {
   const {req} = ctx;
   const c = new Ctx();
   return {
-    url: req.url,
+    // url: req.url,
     id: uuidByString(req.url),
   };
 };
